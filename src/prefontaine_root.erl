@@ -9,8 +9,8 @@ init(_Transport, Req, []) ->
 
 handle(Req, State) ->
   {Method, Req2} = cowboy_req:method(Req),
-  {ok, Req4} = reply(Method, Req2),
-  {ok, Req4, State}.
+  {ok, Req3} = reply(Method, Req2),
+  {ok, Req3, State}.
 
 reply(<<"GET">>, Req) ->
   
