@@ -1,0 +1,13 @@
+{application, prefontaine, [
+  {description, "Simple reverse proxy"},
+  {vsn, "1"},
+  {modules, []},
+  {registered, []},
+  {applications, [
+    kernel,
+    stdlib,
+    cowboy
+  ]},
+  {mod, {prefontaine_app, []}},
+  {env, []}
+]}.
