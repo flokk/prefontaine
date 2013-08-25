@@ -40,10 +40,22 @@ reply(<<"GET">>, Board, {Size, C}, Req) ->
       {<<"action">>, URL},
       {<<"input">>, [
         {<<"item">>, [
-          {<<"type">>, <<"text">>}
+          {<<"type">>, <<"text">>},
+          {<<"required">>, true}
         ]},
         {<<"score">>, [
-          {<<"type">>, <<"number">>}
+          {<<"type">>, <<"number">>},
+          {<<"required">>, true}
+        ]}
+      ]}
+    ]},
+    {<<"remove">>, [
+      {<<"method">>, <<"POST">>},
+      {<<"action">>, URL},
+      {<<"input">>, [
+        {<<"item">>, [
+          {<<"type">>, <<"text">>},
+          {<<"required">>, true}
         ]}
       ]}
     ]}
@@ -53,9 +65,13 @@ reply(<<"GET">>, Board, {Size, C}, Req) ->
 reply(<<"POST">>, Board, {_, C} = Conf, Req) ->
   {ok, Body, Req2} = cowboy_req:body(Req),
   Data = jsx:decode(Body),
-  Score = fast_key:get(<<"score">>, Data),
   Item = fast_key:get(<<"item">>, Data),
-  {ok, _} = eredis:q(C, [<<"ZADD">>, Board, Score, Item]),
+  {ok, _} = case fast_key:get(<<"score">>, Data) of
+    undefined ->
+      eredis:q(C, [<<"ZREM">>, Board, Item]);
+    Score ->
+      eredis:q(C, [<<"ZADD">>, Board, Score, Item])
+  end,
   reply(<<"GET">>, Board, Conf, Req2);
 reply(_, _, _, Req) ->
   %% Method not allowed.
