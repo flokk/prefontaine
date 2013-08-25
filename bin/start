@@ -9,4 +9,4 @@ then
    THREAD_COUNT="8"
 fi
 
-$erlang +K true +A$THREAD_COUNT -smp auto -name prefontaine@`hostname` -pa ebin -pa deps/*/ebin -env ERL_LIBS deps -s prefontaine
+$erlang +K true +A$THREAD_COUNT -smp auto -name prefontaine@`hostname` -pa ebin -pa deps/*/ebin -env ERL_LIBS deps -noshell -noinput -s prefontaine
